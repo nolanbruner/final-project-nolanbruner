@@ -278,7 +278,7 @@ extension OCKStore {
     }
 }
 
-extension OCKHealthKitPassthroughStore {
+extension OCKHealthKitPassthroughStore { //adds functionality, store saves data on the device
 
     func addTasksIfNotPresent(_ tasks: [OCKHealthKitTask]) {
         let tasksToAdd = tasks
@@ -329,8 +329,29 @@ extension OCKHealthKitPassthroughStore {
                 quantityIdentifier: .stepCount,
                 quantityType: .cumulative,
                 unit: .count()))
-
-        addTasksIfNotPresent([steps])
+    
+        let thisMorning = Calendar.current.startOfDay(for: Date())
+        guard let aFewDaysAgo = Calendar.current.date(byAdding: .day, value: -4, to: thisMorning),
+              let beforeBreakfast = Calendar.current.date(byAdding: .hour, value: 8, to: aFewDaysAgo) else{
+                print("can't unwrap calender dates")
+                return
+        }
+        let waterSchedule = OCKSchedule(composing: [
+            OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 1),
+                               text: "Anytime throughout the day", targetValues: [.init(2, units: "Cups")], duration: .allDay)
+            ])
+        
+        let water = OCKHealthKitTask(
+            id: "water",
+            title: "Water",
+            carePlanUUID: nil,
+            schedule: waterSchedule,
+            healthKitLinkage: .init(quantityIdentifier: .dietaryWater, quantityType: .cumulative, unit: .cupUS()))
+            
+        
+        addTasksIfNotPresent([steps,water])
+       
+    
     }
 }
 

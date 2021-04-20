@@ -100,7 +100,7 @@ class CareViewController: OCKDailyPageViewController {
     override func dailyPageViewController(_ dailyPageViewController: OCKDailyPageViewController,
                                           prepare listViewController: OCKListViewController, for date: Date) {
 
-        let identifiers = ["doxylamine", "nausea", "stretch", "kegels", "steps", "heartRate"]
+        let identifiers = ["doxylamine", "nausea","water", "stretch", "kegels", "steps", "heartRate"]
         var query = OCKTaskQuery(for: date)
         query.ids = identifiers
         query.excludesTasksWithNoEvents = true
@@ -128,6 +128,16 @@ class CareViewController: OCKDailyPageViewController {
 
                     let view = NumericProgressTaskView(
                         task: walkTask,
+                        eventQuery: OCKEventQuery(for: date),
+                        storeManager: self.storeManager)
+                        .padding([.vertical], 10)
+
+                    listViewController.appendViewController(view.formattedHostingController(), animated: false)
+                }
+                if #available(iOS 14, *), let waterTask = tasks.first(where: { $0.id == "water" }) {
+
+                    let view = NumericProgressTaskView(
+                        task: waterTask,
                         eventQuery: OCKEventQuery(for: date),
                         storeManager: self.storeManager)
                         .padding([.vertical], 10)

@@ -50,8 +50,8 @@ struct LoginView: View {
             SecureField("Password",text: $password)
                 .padding()
                 Button(action: {
-                    login.login(username: username,password: password)
-
+                   // login.login(username: username,password: password)
+                    login.loginAnonymously()
                 }, label: {
                     Text("Login")
                         .font(.headline)
@@ -64,8 +64,8 @@ struct LoginView: View {
                 //If error occurs show it on the screen
             
                 Button(action: {
-                    
-                    StateView = 1
+                    login.loginAnonymously()
+                 //   StateView = 1
                 }, label: {
                     Text("Sign Up")
                 })

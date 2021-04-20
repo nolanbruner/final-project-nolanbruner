@@ -40,7 +40,7 @@ class Login: ObservableObject {
     /**
      Logs in the user anonymously *asynchronously*.
     */
-    /*
+    
     func loginAnonymously() {
         
         User.anonymous.login { result in
@@ -81,7 +81,7 @@ class Login: ObservableObject {
         }
     }
     
-    */
+    
     func login(username:String, password: String){
         
         User.login(username: username,password: password) { result in
@@ -123,7 +123,8 @@ class Login: ObservableObject {
     }
     func signup(firstName: String, lastName: String, username:String, password:String){
         
-        User.signup(username: username,password: password) { result in
+        User.signup(username: username,password: password)
+        { result in
             switch result {
             case .success(let user):
                 print("Parse signup successful:\(user)")

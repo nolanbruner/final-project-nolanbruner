@@ -334,6 +334,7 @@ extension OCKHealthKitPassthroughStore { //adds functionality, store saves data 
         guard let aFewDaysAgo = Calendar.current.date(byAdding: .day, value: -4, to: thisMorning),
               let beforeBreakfast = Calendar.current.date(byAdding: .hour, value: 8, to: aFewDaysAgo) else{
                 print("can't unwrap calender dates")
+            
                 return
         }
         let waterSchedule = OCKSchedule(composing: [

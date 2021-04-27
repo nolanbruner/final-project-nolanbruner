@@ -40,7 +40,7 @@ class Login: ObservableObject {
     /**
      Logs in the user anonymously *asynchronously*.
     */
-    /*
+    
     func loginAnonymously() {
         
         User.anonymous.login { result in
@@ -81,7 +81,7 @@ class Login: ObservableObject {
         }
     }
     
-    */
+    
     func login(username:String, password: String){
         
         User.login(username: username,password: password) { result in

@@ -78,7 +78,7 @@ class Profile: ObservableObject {
                 patientHasBeenUpdated = true
                 patientToUpdate.birthday = birth
             }
-           let notes = [OCKNote.init(author: first, title: "my string", content: "")]
+           let notes = [OCKNote.init(author: first, title: "my string", content: note)]
             if patient?.notes != notes {
                 patientHasBeenUpdated = true
                 patientToUpdate.notes = notes

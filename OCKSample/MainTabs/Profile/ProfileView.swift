@@ -34,7 +34,10 @@ struct ProfileView: View {
                     .padding()
                     .cornerRadius(20.0)
                     .shadow(radius: 10.0, x: 20, y: 10)
-                
+                TextField("Note", text: $note )
+                    .padding()
+                    .cornerRadius(20.0)
+                    .shadow(radius: 10.0, x: 20, y: 10)
                 DatePicker("Birthday", selection: $birthday, displayedComponents: [DatePickerComponents.date])
                     .padding()
                     .cornerRadius(20.0)
@@ -44,7 +47,7 @@ struct ProfileView: View {
             //Notice that "action" is a closure (which is essentially a function as argument like we discussed in class)
             Button(action: {
 
-                profileViewModel.saveProfile(firstName, last: lastName, birth: birthday)
+                profileViewModel.saveProfile(firstName, last: lastName, birth: birthday, note:note)
 
             }, label: {
                 

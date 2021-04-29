@@ -18,6 +18,7 @@ struct ProfileView: View {
     @State private var isLoggedOut = false
     @State var firstName = ""
     @State var lastName = ""
+    @State var note = ""
     @State var birthday = Calendar.current.date(byAdding: .year, value: -20, to: Date())!
     
     var body: some View {

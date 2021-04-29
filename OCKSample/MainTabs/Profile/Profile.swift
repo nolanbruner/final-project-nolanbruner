@@ -57,7 +57,7 @@ class Profile: ObservableObject {
     
     //Mark: User intentions
     
-    func saveProfile(_ first: String, last: String, birth: Date) {
+    func saveProfile(_ first: String, last: String, birth: Date, note:String) {
         
         if var patientToUpdate = patient {
             //If there is a currentPatient that was fetched, check to see if any of the fields changed
@@ -78,7 +78,11 @@ class Profile: ObservableObject {
                 patientHasBeenUpdated = true
                 patientToUpdate.birthday = birth
             }
-            
+           let notes = [OCKNote.init(author: first, title: "my string", content: "")]
+            if patient?.notes != notes {
+                patientHasBeenUpdated = true
+                patientToUpdate.notes = notes
+            }
             if patientHasBeenUpdated {
                 appDelegate.synchronizedStoreManager?.store.updateAnyPatient(patientToUpdate, callbackQueue: .main) { result in
                     switch result {

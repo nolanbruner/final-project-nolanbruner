@@ -144,6 +144,12 @@ class CareViewController: OCKDailyPageViewController {
 
                     listViewController.appendViewController(view.formattedHostingController(), animated: false)
                 }
+                if #available(iOS 14, *) {
+
+                    let view = LinkView(title:Text("Daily vitimin Intake"), links:[.website("https://www.nhs.uk/live-well/eat-well/what-are-reference-intakes-on-food-labels/", title:"Daily vitamin reference" )])
+                                
+                    listViewController.appendViewController(view.formattedHostingController(), animated: false)
+                }
                 
                 if let stretchTask = tasks.first(where: { $0.id == "stretch" }) {
                     let stretchCard = OCKInstructionsTaskViewController(task: stretchTask, eventQuery: .init(for: date),

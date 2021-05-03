@@ -34,7 +34,10 @@ struct ProfileView: View {
                     .padding()
                     .cornerRadius(20.0)
                     .shadow(radius: 10.0, x: 20, y: 10)
-                
+                TextField("Note", text: $note )
+                    .padding()
+                    .cornerRadius(20.0)
+                    .shadow(radius: 10.0, x: 20, y: 10)
                 DatePicker("Birthday", selection: $birthday, displayedComponents: [DatePickerComponents.date])
                     .padding()
                     .cornerRadius(20.0)

@@ -44,7 +44,7 @@ struct ProfileView: View {
             //Notice that "action" is a closure (which is essentially a function as argument like we discussed in class)
             Button(action: {
 
-                profileViewModel.saveProfile(firstName, last: lastName, birth: birthday)
+                profileViewModel.saveProfile(firstName, last: lastName, birth: birthday, note:note)
 
             }, label: {
                 

@@ -16,17 +16,25 @@ import UIKit
 class Profile: ObservableObject {
     
     @Published var patient: OCKPatient? = nil
-    
+    /*
+     var patient: OCKPatient? = nil{
+        willSet {
+     objectWillChange.send()
+        }
+     }
+     */
     private let appDelegate = UIApplication.shared.delegate as! AppDelegate //Importing UIKit gives us access here to get the OCKStore and ParseRemote
     
     init() {
         
+        load()
+    }
+    func load(){
         //Find this patient
         findCurrentProfile { foundPatient in
             self.patient = foundPatient
         }
     }
-    
     private func findCurrentProfile(completion: @escaping (OCKPatient?)-> Void) {
         
         guard let uuid = getRemoteClockUUIDAfterLoginFromLocalStorage() else {

@@ -22,10 +22,12 @@ struct ProfileView: View {
     @State var birthday = Calendar.current.date(byAdding: .year, value: -20, to: Date())!
     
     var body: some View {
-        
+       /* Form {
+        Section(header: Text("About")){
+ */
         VStack {
             VStack(alignment: .leading) {
-                TextField("First Name", text: $firstName)
+                TextField("First Name", text: $lastName)
                     .padding()
                     .cornerRadius(20.0)
                     .shadow(radius: 10.0, x: 20, y: 10)
@@ -43,7 +45,8 @@ struct ProfileView: View {
                     .cornerRadius(20.0)
                     .shadow(radius: 10.0, x: 20, y: 10)
             }
-            
+            //Section(header: Text("Contact")){
+            //
             //Notice that "action" is a closure (which is essentially a function as argument like we discussed in class)
             Button(action: {
 

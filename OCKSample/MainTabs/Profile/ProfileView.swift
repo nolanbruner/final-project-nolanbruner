@@ -19,15 +19,25 @@ struct ProfileView: View {
     @State var firstName = ""
     @State var lastName = ""
     @State var note = ""
+    @State var allergies = ""
+    @State var sex = ""
+    
+    @State var email = ""
+    @State var phone = ""
+    @State var street = ""
+    @State var city = ""
+    @State var state = ""
+    @State var zipcode = ""
+    @State var country = ""
     @State var birthday = Calendar.current.date(byAdding: .year, value: -20, to: Date())!
     
     var body: some View {
-       /* Form {
+        Form {
         Section(header: Text("About")){
- */
-        VStack {
-            VStack(alignment: .leading) {
-                TextField("First Name", text: $lastName)
+ 
+       // VStack {
+     //       VStack(alignment: .leading) {
+                TextField("First Name", text: $firstName)
                     .padding()
                     .cornerRadius(20.0)
                     .shadow(radius: 10.0, x: 20, y: 10)
@@ -44,14 +54,52 @@ struct ProfileView: View {
                     .padding()
                     .cornerRadius(20.0)
                     .shadow(radius: 10.0, x: 20, y: 10)
-            }
-            //Section(header: Text("Contact")){
-            //
+                TextField("Sex", text: $sex)
+                    .padding()
+                    .cornerRadius(20.0)
+                    .shadow(radius: 10.0, x: 20, y: 10)
+                TextField("Allergies", text: $allergies)
+                    .padding()
+                    .cornerRadius(20.0)
+                    .shadow(radius: 10.0, x: 20, y: 10)
+                }
+           Section(header: Text("Contact")){
+            TextField("Email", text: $email)
+                .padding()
+                .cornerRadius(20.0)
+                .shadow(radius: 10.0, x: 20, y: 10)
+            TextField("Phone Number", text: $phone)
+                .padding()
+                .cornerRadius(20.0)
+                .shadow(radius: 10.0, x: 20, y: 10)
+            TextField("Street", text: $street)
+                .padding()
+                .cornerRadius(20.0)
+                .shadow(radius: 10.0, x: 20, y: 10)
+            TextField("city", text: $city)
+                .padding()
+                .cornerRadius(20.0)
+                .shadow(radius: 10.0, x: 20, y: 10)
+            TextField("State", text: $state)
+                .padding()
+                .cornerRadius(20.0)
+                .shadow(radius: 10.0, x: 20, y: 10)
+            TextField("Zip Code", text: $zipcode)
+                .padding()
+                .cornerRadius(20.0)
+                .shadow(radius: 10.0, x: 20, y: 10)
+            TextField("country", text: $country)
+                .padding()
+                .cornerRadius(20.0)
+                .shadow(radius: 10.0, x: 20, y: 10)
+            
+        }
             //Notice that "action" is a closure (which is essentially a function as argument like we discussed in class)
             Button(action: {
 
-                profileViewModel.saveProfile(firstName, last: lastName, birth: birthday, note:note)
-
+                profileViewModel.saveProfile(firstName, last: lastName, birth: birthday, note: note, allergies: allergies, sex: sex, email: email, phone: phone, street: street, city: city, state: state, zipcode: zipcode, country: country)
+              
+                
             }, label: {
                 
                 Text("Save Profile")
@@ -113,6 +161,7 @@ struct ProfileView: View {
                     LoginView()
                 })
             }
+            // fill text boxes if they are in the Database
         }.onReceive(profileViewModel.$patient, perform: { patient in
             if let currentFirstName = patient?.name.givenName {
                 firstName = currentFirstName
@@ -124,6 +173,44 @@ struct ProfileView: View {
             
             if let currentBirthday = patient?.birthday {
                 birthday = currentBirthday
+            }
+            
+            if let currentNote = patient?.notes?.first?.content{
+                note = currentNote
+            }
+            
+            if let currentSex = patient?.sex{
+                switch currentSex{
+                case .male:
+                    sex = "Male"
+                case .female:
+                    sex = "Female"
+                default:
+                    sex = "other"
+                }
+            }
+        }).onReceive(profileViewModel.$contact, perform: { contact in
+            if let currentEmail = contact?.emailAddresses?.first {
+                email = currentEmail.value
+            }
+            
+            if let currentPhone = contact?.phoneNumbers?.first {
+                phone = currentPhone.value
+            }
+            if let currentStreet = contact?.address?.street{
+                street = currentStreet
+            }
+            if let currentCity = contact?.address?.city{
+                city = currentCity
+            }
+            if let currentState = contact?.address?.state{
+                state = currentState
+            }
+            if let currentZipcode = contact?.address?.postalCode{
+                zipcode = currentZipcode
+            }
+            if let currentCountry = contact?.address?.country{
+                country = currentCountry
             }
         })
     }

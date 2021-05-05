@@ -16,6 +16,7 @@ import UIKit
 class Profile: ObservableObject {
     
     @Published var patient: OCKPatient? = nil
+    @Published var contact: OCKContact? = nil
     /*
      var patient: OCKPatient? = nil{
         willSet {
@@ -33,6 +34,9 @@ class Profile: ObservableObject {
         //Find this patient
         findCurrentProfile { foundPatient in
             self.patient = foundPatient
+        }
+        findCurrentContact { foundContact in
+            self.contact = foundContact
         }
     }
     private func findCurrentProfile(completion: @escaping (OCKPatient?)-> Void) {
@@ -62,10 +66,35 @@ class Profile: ObservableObject {
             }
         }
     }
-    
+    private func findCurrentContact(completion: @escaping (OCKContact?)-> Void) {
+        
+        guard let uuid = getRemoteClockUUIDAfterLoginFromLocalStorage() else {
+            completion(nil)
+            return
+    }
+        //Build query to search for OCKPatient
+        var queryForCurrentContact = OCKContactQuery(for: Date()) //This makes the query for the current version of Patient
+        queryForCurrentContact.ids = [uuid.uuidString] //Search for the current logged in user
+        
+        self.appDelegate.synchronizedStoreManager?.store.fetchAnyContacts(query: queryForCurrentContact, callbackQueue: .main) { result in
+            switch result {
+            
+            case .success(let foundContact):
+                guard let currentContact = foundContact.first as? OCKContact else {
+                    completion(nil)
+                    return
+                }
+                completion(currentContact)
+                
+            case .failure(let error):
+                print("Error: Couldn't find patient with id \"\(uuid)\". It's possible they have never been saved. Query error: \(error)")
+                completion(nil)
+            }
+        }
+    }
     //Mark: User intentions
     
-    func saveProfile(_ first: String, last: String, birth: Date, note:String) {
+    func saveProfile(_ first: String, last: String, birth: Date, note:String, allergies: String, sex:String, email:String, phone:String, street:String, city:String, state:String, zipcode:String, country:String) {
         
         if var patientToUpdate = patient {
             //If there is a currentPatient that was fetched, check to see if any of the fields changed
@@ -91,6 +120,23 @@ class Profile: ObservableObject {
                 patientHasBeenUpdated = true
                 patientToUpdate.notes = notes
             }
+            /*
+            let patientAllergies = OCKBiologicalSex
+            if patient?.allergies != allergies {
+                patientHasBeenUpdated = true
+                patientToUpdate.allergies = allergies
+            */
+           let patientSex = OCKBiologicalSex(rawValue: sex)
+            if patient?.sex != patientSex {
+                patientHasBeenUpdated = true
+                patientToUpdate.sex = patientSex
+            }
+        //    let patientAllergies =
+            if patient?.allergies != [allergies] {
+                patientHasBeenUpdated = true
+                patientToUpdate.allergies = [allergies]
+            }
+ 
             if patientHasBeenUpdated {
                 appDelegate.synchronizedStoreManager?.store.updateAnyPatient(patientToUpdate, callbackQueue: .main) { result in
                     switch result {
@@ -106,9 +152,6 @@ class Profile: ObservableObject {
                     }
                 }
             }
-            
-        } else {
-            
             guard let remoteUUID = UserDefaults.standard.object(forKey: Constants.parseRemoteClockIDKey) as? String else {
                 print("Error: The user currently isn't logged in")
                 return
@@ -116,6 +159,7 @@ class Profile: ObservableObject {
             
             var newPatient = OCKPatient(id: remoteUUID, givenName: first, familyName: last)
             newPatient.birthday = birth
+        
             
             //This is new patient that has never been saved before
             appDelegate.synchronizedStoreManager?.store.addAnyPatient(newPatient, callbackQueue: .main) { result in
@@ -127,6 +171,113 @@ class Profile: ObservableObject {
                         return
                     }
                     self.patient = newPatient
+                case .failure(let error):
+                    print("Error: \(error)")
+                }
+            }
+        }
+        if var contactToUpdate = contact {
+            //If there is a currentPatient that was fetched, check to see if any of the fields changed
+            var contactHasBeenUpdated = false
+        
+            let potentialEmail = [OCKLabeledValue(label: "email", value: email)]
+            if contact?.emailAddresses != potentialEmail {
+                contactHasBeenUpdated = true
+                contactToUpdate.emailAddresses = potentialEmail
+            }
+            if contact?.name.givenName != first {
+                contactHasBeenUpdated = true
+                contactToUpdate.name.givenName = first
+            }
+            
+            if contact?.name.familyName != last {
+                contactHasBeenUpdated = true
+                contactToUpdate.name.familyName = last
+            }
+            
+            let potentialPhone = [OCKLabeledValue(label: "phone number", value: phone)]
+            if contact?.phoneNumbers != potentialPhone {
+                contactHasBeenUpdated = true
+                contactToUpdate.phoneNumbers = potentialPhone
+            }
+            
+           
+            /*
+            if contact?.address?.street != street {
+                contactHasBeenUpdated = true
+                contact?.address?.street = street
+            }
+            
+            if contact?.address?.city != potentialAddress.city {
+                contactHasBeenUpdated = true
+                contactToUpdate.address?.city = potentialAddress.city
+            }
+            if contact?.address?.state != potentialAddress.state {
+                contactHasBeenUpdated = true
+                contactToUpdate.address?.state = potentialAddress.state
+            }
+            if contact?.address?.postalCode != potentialAddress.postalCode {
+                contactHasBeenUpdated = true
+                contactToUpdate.address?.postalCode = potentialAddress.postalCode
+            }
+             if contact?.address?.country != potentialAddress.country {
+                             contactHasBeenUpdated = true
+                             contactToUpdate.address?.country = potentialAddress.country
+            }
+            */
+            // populates OCKPostalAddress class with user input
+            let potentialAddress = OCKPostalAddress()
+            potentialAddress.street = street
+            potentialAddress.city = city
+            potentialAddress.state = state
+            potentialAddress.postalCode = zipcode
+            potentialAddress.country = country
+            if contact?.address != potentialAddress {
+                contactHasBeenUpdated = true
+                contactToUpdate.address = potentialAddress
+            }
+            
+            if contactHasBeenUpdated {
+                appDelegate.synchronizedStoreManager?.store.updateAnyContact(contactToUpdate, callbackQueue: .main) { result in
+                    switch result {
+                    
+                    case .success(let updated):
+                        print("Successfully updated contact")
+                        guard let updatedContact = updated as? OCKContact else {
+                            return
+                        }
+                        self.contact = updatedContact
+                    case .failure(let error):
+                        print("Error updating patient: \(error)")
+                    }
+                }
+            }
+
+                
+        } else {
+            
+            guard let remoteUUID = UserDefaults.standard.object(forKey: Constants.parseRemoteClockIDKey) as? String else {
+                print("Error: The user currently isn't logged in")
+                return
+            }
+           
+            var newContact = OCKContact(id: remoteUUID, givenName: first, familyName: last, carePlanUUID: nil)
+         //  newContact.emailAddresses = email
+            /*  newContact.address = {
+            let address = OCKPostalAddress()
+                address.street = street
+                
+            }*/
+            //This is new patient that has never been saved before
+            appDelegate.synchronizedStoreManager?.store.addAnyContact(newContact, callbackQueue: .main) { result in
+                switch result {
+                
+                case .success(let new):
+                    print("Succesffully saved new contact")
+                    guard let newContact = new as? OCKContact else {
+                        return
+                    }
+                    self.contact = newContact
                 case .failure(let error):
                     print("Error: \(error)")
                 }

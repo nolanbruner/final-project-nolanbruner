@@ -64,7 +64,7 @@ struct LoginView: View {
                 //If error occurs show it on the screen
             
                 Button(action: {
-          //          login.loginAnonymously()
+                   login.loginAnonymously()
                  //   StateView = 1
                 }, label: {
                     Text("Sign Up")

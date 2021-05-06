@@ -72,6 +72,15 @@ struct LoginView: View {
                     .background(Color(.red))
                     .cornerRadius(15)
                 //If error occurs show it on the screen
+            
+                Button(action: {
+                   login.loginAnonymously()
+                 //   StateView = 1
+                }, label: {
+                    Text("Sign Up")
+                })
+          
+                
                 if let error = login.loginError {
                     Text("Error: \(error.message)")
                         .foregroundColor(.red)

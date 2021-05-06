@@ -30,6 +30,8 @@ struct LoginView: View {
         }
         else { VStack() {
        //    background(Color.blue)
+           //Login View
+            if StateView == 0 {
                 Text("Welcome to Health Tracker")
                     .font(.title)
                     .foregroundColor(Color(.red))
@@ -41,57 +43,51 @@ struct LoginView: View {
                     .frame(width: 200, height: 200, alignment: .center)
                     //.clipShape(Circle())
               //      .overlay(Square().stroke(Color(#colorLiteral(red: 0, green: 0.2858072221, blue: 0.6897063851, alpha: 1) ),lineWidth: 6))
-                    
                     .shadow(radius: 2)
                 //Notice that "action" is a closure (which is essentially a function as an argument)
-            TextField("username",text: $username)
-                .padding()
-               // .background()
-            SecureField("Password",text: $password)
-                .padding()
-                Button(action: {
-                    login.login(username: username,password: password)
-                
-                }, label: {
-                    Text("Login")
-                        .font(.headline)
-                        .foregroundColor(.white)
+                //switch between login and signup
+            Picker(selection: $StateView, label: Text("Login Picker"), content:{
+                Text("Login").tag(0)
+                Text("Sign Up").tag(1)
+            })
+            .pickerStyle(SegmentedPickerStyle())
+            .background(Color.white)
+            .cornerRadius(20.0)
+            .padding()
+                    TextField("username",text: $username)
                         .padding()
-                        .frame(width: 300, height: 50)
-                })
-                .background(Color(.red))
-                .cornerRadius(15)
+               // .background()
+                    SecureField("Password",text: $password)
+                        .padding()
+                    Button(action: {
+                        login.login(username: username,password: password)
+                      //  login.loginAnonymously()
+                    }, label: {
+                        Text("Login")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(width: 300, height: 50)
+                    })
+                    .background(Color(.red))
+                    .cornerRadius(15)
                 //If error occurs show it on the screen
-            
-                Button(action: {
-                   login.loginAnonymously()
-                 //   StateView = 1
-                }, label: {
-                    Text("Sign Up")
-                })
-          
-                
                 if let error = login.loginError {
                     Text("Error: \(error.message)")
                         .foregroundColor(.red)
                 }
-                
               //  Spacer()
             }
+        // Signup View
         if StateView == 1{
-    //        @ObservedObject private var login = Login()
- /*           @State private var presentMainScreen = false
-            @State var firstName: String = ""
-            @State var lastName:String = ""
-            @State var username: String = ""
-            @State var email: String = ""
-            @State var password:String = ""
-            */
-               //var body: some View{
-             
-                VStack(){
-                 //   Text("Click Create Account to finish signing up")
-                   //     .padding()
+                    Picker(selection: $StateView, label: Text("Login Picker"), content:{
+                        Text("Login").tag(0)
+                        Text("Sign Up").tag(1)
+                    })
+                    .pickerStyle(SegmentedPickerStyle())
+                    .background(Color.white)
+                    .cornerRadius(20.0)
+                    .padding()
                     TextField("First Name", text: $firstName)
                         .padding()
                     TextField("Last Name", text: $lastName)
@@ -104,26 +100,31 @@ struct LoginView: View {
                     SecureField("Password",text: $password)
                         .padding()
                     Button(action: {
-                       login.signup(firstName: firstName, lastName: lastName, username: username, password: password)
-                     //   login.login(username: username, password: password)
+                        login.signup(firstName: firstName, lastName: lastName, username: username, password: password)
                     }, label: {
                         Text("Create Account")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(width: 300, height: 50)
                     })
-                        Spacer()
+                    .background(Color(.red))
+                    .cornerRadius(15)
+                    //Spacer()
+                    
                 }
-        }
-       
+            }
+        
         }
     }
 }
-
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         LoginView()
     }
 }
-
+/*
 struct signupView:View{
    // @ObservedObject private var signup = signup()
     @ObservedObject private var login = Login()
@@ -158,9 +159,11 @@ struct signupView:View{
         }
     }
 }
+
 struct signupView_Previews: PreviewProvider {
     static var previews: some View {
         signupView()
     }
 }
 
+*/

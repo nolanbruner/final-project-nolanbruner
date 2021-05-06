@@ -337,22 +337,20 @@ extension OCKHealthKitPassthroughStore { //adds functionality, store saves data 
             
                 return
         }
+        //amount of water desired to drink in a day
         let waterSchedule = OCKSchedule(composing: [
             OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 1),
                                text: "Anytime throughout the day", targetValues: [.init(2, units: "Cups")], duration: .allDay)
             ])
-        
+        // added water task
         let water = OCKHealthKitTask(
             id: "water",
             title: "Water",
             carePlanUUID: nil,
             schedule: waterSchedule,
             healthKitLinkage: .init(quantityIdentifier: .dietaryWater, quantityType: .cumulative, unit: .cupUS()))
-            
-        
+  
         addTasksIfNotPresent([steps,water])
-       
-    
     }
 }
 

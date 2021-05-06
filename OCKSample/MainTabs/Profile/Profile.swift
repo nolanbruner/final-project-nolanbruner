@@ -14,7 +14,7 @@ import ParseCareKit
 import UIKit
 
 class Profile: ObservableObject {
-    
+    //creates an instance of patient and contact that are initialized to nil, but will be changed
     @Published var patient: OCKPatient? = nil
     @Published var contact: OCKContact? = nil
     /*
@@ -30,6 +30,8 @@ class Profile: ObservableObject {
         
         load()
     }
+    
+    // sets patient and client to their found objects
     func load(){
         //Find this patient
         findCurrentProfile { foundPatient in
@@ -93,14 +95,31 @@ class Profile: ObservableObject {
         }
     }
     //Mark: User intentions
-    
+    /**
+     This function creates an instance of Profile and uses this information to save an instance of contact and patient. The function first checks to see if the patient's/contact's attributes have been changed. If they have been changed, then they are stored in the correct place in the database.
+     - parameters:
+        - first: String entered in the TextField in the profile view
+        - last: String entered in the TextField in the profile view
+        - birth: String entered in the TextField in the profile view
+        - note: String entered in the SecureField in the profile view
+        - allergies: String entered in the TextField in the profile view
+        - sex: String entered in the TextField in the profile view
+        - email: String entered in the TextField in the profile view
+        - phone: String entered in the TextField in the profile view
+        - street: String entered in the TextField in the profile view
+        - city: String entered in the TextField in the profile view
+        - state: String entered in the TextField in the profile view
+        - zipcode: String entered in the TextField in the profile view
+        - country: String entered in the TextField in the profile view
+     
+     */
     func saveProfile(_ first: String, last: String, birth: Date, note:String, allergies: String, sex:String, email:String, phone:String, street:String, city:String, state:String, zipcode:String, country:String) {
         
         if var patientToUpdate = patient {
             //If there is a currentPatient that was fetched, check to see if any of the fields changed
             
             var patientHasBeenUpdated = false
-            
+            // name is broken up in two components givenName and familyName
             if patient?.name.givenName != first {
                 patientHasBeenUpdated = true
                 patientToUpdate.name.givenName = first
@@ -115,26 +134,26 @@ class Profile: ObservableObject {
                 patientHasBeenUpdated = true
                 patientToUpdate.birthday = birth
             }
+            //OCKNote is an Object that takes in three parameters with content being the note
+            //patient.notes is an array of notes so notes must be initialized to type array
            let notes = [OCKNote.init(author: first, title: "my string", content: note)]
             if patient?.notes != notes {
                 patientHasBeenUpdated = true
                 patientToUpdate.notes = notes
             }
-            /*
-            let patientAllergies = OCKBiologicalSex
-            if patient?.allergies != allergies {
-                patientHasBeenUpdated = true
-                patientToUpdate.allergies = allergies
-            */
+            // patient.sex is of type OCKBiologicalSex, so an instance of OCKBiologicalSex(rawValue:String) is needed
            let patientSex = OCKBiologicalSex(rawValue: sex)
             if patient?.sex != patientSex {
                 patientHasBeenUpdated = true
                 patientToUpdate.sex = patientSex
             }
-        //    let patientAllergies =
+            //  patient.allergies is type array so it must be equal to an array of allergies.
+            // If the user inters a new string for allergies, the previous string stays in the array.
             if patient?.allergies != [allergies] {
                 patientHasBeenUpdated = true
-                patientToUpdate.allergies = [allergies]
+               
+                patientToUpdate.allergies = (patient?.allergies)! + [allergies]
+                
             }
  
             if patientHasBeenUpdated {
@@ -176,6 +195,7 @@ class Profile: ObservableObject {
                 }
             }
         }
+        // create an instance of contact
         if var contactToUpdate = contact {
             //If there is a currentPatient that was fetched, check to see if any of the fields changed
             var contactHasBeenUpdated = false
@@ -200,38 +220,14 @@ class Profile: ObservableObject {
                 contactHasBeenUpdated = true
                 contactToUpdate.phoneNumbers = potentialPhone
             }
-            
-           
-            /*
-            if contact?.address?.street != street {
-                contactHasBeenUpdated = true
-                contact?.address?.street = street
-            }
-            
-            if contact?.address?.city != potentialAddress.city {
-                contactHasBeenUpdated = true
-                contactToUpdate.address?.city = potentialAddress.city
-            }
-            if contact?.address?.state != potentialAddress.state {
-                contactHasBeenUpdated = true
-                contactToUpdate.address?.state = potentialAddress.state
-            }
-            if contact?.address?.postalCode != potentialAddress.postalCode {
-                contactHasBeenUpdated = true
-                contactToUpdate.address?.postalCode = potentialAddress.postalCode
-            }
-             if contact?.address?.country != potentialAddress.country {
-                             contactHasBeenUpdated = true
-                             contactToUpdate.address?.country = potentialAddress.country
-            }
-            */
-            // populates OCKPostalAddress class with user input
+            // creates an instance of OCKPostalAddress and populates it with user input from the text fields
             let potentialAddress = OCKPostalAddress()
             potentialAddress.street = street
             potentialAddress.city = city
             potentialAddress.state = state
             potentialAddress.postalCode = zipcode
             potentialAddress.country = country
+            //populates contact.address if it does not equal the user input
             if contact?.address != potentialAddress {
                 contactHasBeenUpdated = true
                 contactToUpdate.address = potentialAddress

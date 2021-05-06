@@ -134,6 +134,7 @@ class CareViewController: OCKDailyPageViewController {
 
                     listViewController.appendViewController(view.formattedHostingController(), animated: false)
                 }
+                //creates a new task in the main view
                 if #available(iOS 14, *), let waterTask = tasks.first(where: { $0.id == "water" }) {
 
                     let view = NumericProgressTaskView(
@@ -144,10 +145,9 @@ class CareViewController: OCKDailyPageViewController {
 
                     listViewController.appendViewController(view.formattedHostingController(), animated: false)
                 }
+                // adds a task that directs the user to a link of daily vitamin recommendations
                 if #available(iOS 14, *) {
-
-                    let view = LinkView(title:Text("Daily vitimin Intake"), links:[.website("https://www.nhs.uk/live-well/eat-well/what-are-reference-intakes-on-food-labels/", title:"Daily vitamin reference" )])
-                                
+                    let view = LinkView(title:Text("Daily vitamin Intake"), links:[.website("https://www.nhs.uk/live-well/eat-well/what-are-reference-intakes-on-food-labels/", title:"Daily vitamin reference" )])
                     listViewController.appendViewController(view.formattedHostingController(), animated: false)
                 }
                 

@@ -94,14 +94,11 @@ struct ProfileView: View {
                 .shadow(radius: 10.0, x: 20, y: 10)
             
         }
-            //Notice that "action" is a closure (which is essentially a function as argument like we discussed in class)
+            // This button calls saveProfile which contains all of the strings entered by the user.
             Button(action: {
-
                 profileViewModel.saveProfile(firstName, last: lastName, birth: birthday, note: note, allergies: allergies, sex: sex, email: email, phone: phone, street: street, city: city, state: state, zipcode: zipcode, country: country)
-              
                 
             }, label: {
-                
                 Text("Save Profile")
                     .font(.headline)
                     .foregroundColor(.white)
@@ -112,8 +109,6 @@ struct ProfileView: View {
             .cornerRadius(15)
             
             if #available(iOS 14.0, *) {
-                
-                //Notice that "action" is a closure (which is essentially a function as argument like we discussed in class)
                 Button(action: {
                     do {
                         try profileViewModel.logout()
@@ -162,6 +157,7 @@ struct ProfileView: View {
                 })
             }
             // fill text boxes if they are in the Database
+            // .onRecieve allows the app to populate the TextFields if the values are already stored in the database
         }.onReceive(profileViewModel.$patient, perform: { patient in
             if let currentFirstName = patient?.name.givenName {
                 firstName = currentFirstName

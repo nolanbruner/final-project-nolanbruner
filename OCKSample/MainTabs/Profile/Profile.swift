@@ -152,7 +152,8 @@ class Profile: ObservableObject {
             if patient?.allergies != [allergies] {
                 patientHasBeenUpdated = true
                
-                patientToUpdate.allergies = (patient?.allergies)! + [allergies]
+               // patientToUpdate.allergies = (patient?.allergies)! + [allergies]
+                patientToUpdate.allergies = [allergies]
                 
             }
  

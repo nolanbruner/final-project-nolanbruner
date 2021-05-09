@@ -12,6 +12,7 @@ import CareKitStore
 import CareKitUI
 import UIKit
 
+
 //This file is the SwiftUI equivalent to UITabBarController in setupTabBarController() in SceneDelegate.swift
 
 struct StoreManagerKey: EnvironmentKey {
@@ -82,6 +83,18 @@ struct MainView: View {
                     }
                 }
                 .tag(2)
+            settingsView()
+                .tabItem {
+                    if selectedTab == 3 {
+                        Image("settings-filled")
+                            .renderingMode(.template)
+                    } else {
+                        Image("settings")
+                            .renderingMode(.template)
+                    }
+                }
+                .tag(3)
+            
         }
         .accentColor(Color(tintColor))
     }

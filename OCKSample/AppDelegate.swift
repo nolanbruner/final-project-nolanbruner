@@ -225,7 +225,27 @@ extension OCKStore {
                              carePlanUUID: nil, schedule: nauseaSchedule)
         nausea.impactsAdherence = false
         nausea.instructions = "Tap the button below anytime you experience nausea."
-        
+     /*   let waterSchedule = OCKSchedule(composing: [
+            OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 1),
+                               text: "Anytime throughout the day", targetValues: [.init(16, units: "Cups")], duration: .allDay)
+            ])
+      
+
+      var water = OCKTask(
+            id: "water", title: "Track your water Intake",
+                             carePlanUUID: nil, schedule: waterSchedule)
+        water.impactsAdherence = false
+        water.instructions = "Tap the button below anytime you experience nausea."
+      let waterSchedule = OCKSchedule(composing: [
+        OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 1),
+                           text: "Anytime throughout the day", targetValues:  [.init(16, units: "Cups")], duration: .allDay)
+        ])
+
+    var water = OCKTask(id: "water", title: "Track your nausea",
+                         carePlanUUID: nil, schedule: waterSchedule)
+        water.impactsAdherence = false
+        water.instructions = "Tap the button below anytime you experience nausea."
+       */
         let kegelElement = OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 2))
         let kegelSchedule = OCKSchedule(composing: [kegelElement])
         var kegels = OCKTask(id: "kegels", title: "Kegel Exercises", carePlanUUID: nil, schedule: kegelSchedule)
@@ -237,7 +257,7 @@ extension OCKStore {
         var stretch = OCKTask(id: "stretch", title: "Stretch", carePlanUUID: nil, schedule: stretchSchedule)
         stretch.impactsAdherence = true
 
-        addTasksIfNotPresent([nausea, doxylamine, kegels, stretch])
+        addTasksIfNotPresent([nausea, doxylamine, kegels, stretch,])
         
         
         var contact1 = OCKContact(id: "jane", givenName: "Jane",
@@ -329,8 +349,9 @@ extension OCKHealthKitPassthroughStore { //adds functionality, store saves data 
                 quantityIdentifier: .stepCount,
                 quantityType: .cumulative,
                 unit: .count()))
-    
-        let thisMorning = Calendar.current.startOfDay(for: Date())
+        
+        
+           let thisMorning = Calendar.current.startOfDay(for: Date())
         guard let aFewDaysAgo = Calendar.current.date(byAdding: .day, value: -4, to: thisMorning),
               let beforeBreakfast = Calendar.current.date(byAdding: .hour, value: 8, to: aFewDaysAgo) else{
                 print("can't unwrap calender dates")
@@ -340,17 +361,26 @@ extension OCKHealthKitPassthroughStore { //adds functionality, store saves data 
         //amount of water desired to drink in a day
         let waterSchedule = OCKSchedule(composing: [
             OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 1),
-                               text: "Anytime throughout the day", targetValues: [.init(2, units: "Cups")], duration: .allDay)
+                               text: "Anytime throughout the day", targetValues: [OCKOutcomeValue(16, units: "Cups")], duration: .allDay)
             ])
+      
+/*
+      var water = OCKTask(
+            id: "water", title: "Track your water Intake",
+                             carePlanUUID: nil, schedule: waterSchedule)
+        water.impactsAdherence = false
+        water.instructions = "Tap the button below anytime you experience nausea."
+        
+        */
         // added water task
-        let water = OCKHealthKitTask(
+       let water = OCKHealthKitTask(
             id: "water",
             title: "Water",
             carePlanUUID: nil,
             schedule: waterSchedule,
             healthKitLinkage: .init(quantityIdentifier: .dietaryWater, quantityType: .cumulative, unit: .cupUS()))
-  
-        addTasksIfNotPresent([steps,water])
+      
+        addTasksIfNotPresent([steps, water])
     }
 }
 

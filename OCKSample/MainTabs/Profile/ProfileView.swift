@@ -170,7 +170,9 @@ struct ProfileView: View {
             if let currentBirthday = patient?.birthday {
                 birthday = currentBirthday
             }
-            
+            if let currentAllergies = patient?.allergies?.last{
+                allergies = currentAllergies
+            }
             if let currentNote = patient?.notes?.first?.content{
                 note = currentNote
             }

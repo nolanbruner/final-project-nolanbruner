@@ -39,7 +39,7 @@ class CareViewController: OCKDailyPageViewController {
 
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     var alreadySyncing = false
-    
+    @State var calories = ""
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(synchronizeWithRemote))
@@ -100,7 +100,7 @@ class CareViewController: OCKDailyPageViewController {
     override func dailyPageViewController(_ dailyPageViewController: OCKDailyPageViewController,
                                           prepare listViewController: OCKListViewController, for date: Date) {
 
-        let identifiers = ["doxylamine", "nausea","water", "stretch", "kegels", "steps", "heartRate"]
+        let identifiers = ["doxylamine","calories","nausea","water", "stretch", "kegels", "steps", "heartRate"]
         var query = OCKTaskQuery(for: date)
         query.ids = identifiers
         query.excludesTasksWithNoEvents = true
@@ -136,16 +136,56 @@ class CareViewController: OCKDailyPageViewController {
                 }
                 //creates a new task in the main view
                 if #available(iOS 14, *), let waterTask = tasks.first(where: { $0.id == "water" }) {
+                    /*
+                 
+                    // Create a plot comparing nausea to medication adherence.
+                    let waterDataSeries = OCKDataSeriesConfiguration(
+                        taskID: "water",
+                        legendTitle: "Water",
+                        gradientStartColor: .blue,
+                        gradientEndColor: .systemBlue,
+                        markerSize: 10,
+                        eventAggregator: OCKEventAggregator.countOutcomeValues)
 
+                    let insightsCard = OCKCartesianChartViewController(
+                        plotType: .bar,
+                        selectedDate: date,
+                        configurations: [waterDataSeries],
+                        storeManager: self.storeManager)
+
+                    insightsCard.chartView.headerView.titleLabel.text = "Nausea & Doxylamine Intake"
+                    insightsCard.chartView.headerView.detailLabel.text = "This Week"
+                    insightsCard.chartView.headerView.accessibilityLabel = "Nausea & Doxylamine Intake, This Week"
+                    listViewController.appendViewController(insightsCard, animated: false)
+
+                    // Also create a card that displays a single event.
+                    // The event query passed into the initializer specifies that only
+                    // today's log entries should be displayed by this log task view controller.
+                    let waterCard = OCKButtonLogTaskViewController(task: waterTask, eventQuery: .init(for: date),
+                                                                    storeManager: self.storeManager)
+                    listViewController.appendViewController(waterCard, animated: false)
+                   */
+                    //  OCKNumericProgressTaskController
                     let view = NumericProgressTaskView(
                         task: waterTask,
                         eventQuery: OCKEventQuery(for: date),
                         storeManager: self.storeManager)
                         .padding([.vertical], 10)
-
                     listViewController.appendViewController(view.formattedHostingController(), animated: false)
+                    
+                   
+                }
+                if #available(iOS 14, *), let calorieTask = tasks.first(where: { $0.id == "calories" }) {
+                        let view = NumericProgressTaskView(
+                            task: calorieTask,
+                            eventQuery: OCKEventQuery(for: date),
+                            storeManager: self.storeManager)
+                            .padding([.vertical], 10)
+                           // NumericProgressTaskViewController(task: calorieTask, eventQuery: .init(for: date), storeManager: self.storeManager)
+                            listViewController.appendViewController(view.formattedHostingController(), animated: false)
                 }
                 // adds a task that directs the user to a link of daily vitamin recommendations
+     
                 if #available(iOS 14, *) {
                     let view = LinkView(title:Text("Daily vitamin Intake"), links:[.website("https://www.nhs.uk/live-well/eat-well/what-are-reference-intakes-on-food-labels/", title:"Daily vitamin reference" )])
                     listViewController.appendViewController(view.formattedHostingController(), animated: false)

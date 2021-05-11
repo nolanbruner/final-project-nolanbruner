@@ -36,9 +36,10 @@ import SwiftUI
 import CareKitUI
 
 class CareViewController: OCKDailyPageViewController {
-
+   // @State var mood = "neutral"
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     var alreadySyncing = false
+    @State var calories = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -100,7 +101,7 @@ class CareViewController: OCKDailyPageViewController {
     override func dailyPageViewController(_ dailyPageViewController: OCKDailyPageViewController,
                                           prepare listViewController: OCKListViewController, for date: Date) {
 
-        let identifiers = ["doxylamine", "nausea", "stretch", "kegels", "steps", "heartRate"]
+        let identifiers = ["doxylamine","nausea","water", "stretch", "kegels", "steps", "heartRate", "mood"]
         var query = OCKTaskQuery(for: date)
         query.ids = identifiers
         query.excludesTasksWithNoEvents = true
@@ -121,6 +122,7 @@ class CareViewController: OCKDailyPageViewController {
                     tipView.headerView.titleLabel.text = tipTitle
                     tipView.headerView.detailLabel.text = tipText
                     tipView.imageView.image = UIImage(named: "exercise.jpg")
+                    
                     listViewController.appendView(tipView, animated: false)
                 }
 
@@ -132,6 +134,29 @@ class CareViewController: OCKDailyPageViewController {
                         storeManager: self.storeManager)
                         .padding([.vertical], 10)
 
+                    listViewController.appendViewController(view.formattedHostingController(), animated: false)
+                }
+                //creates a new task in the main view
+                if #available(iOS 14, *), let waterTask = tasks.first(where: { $0.id == "water" }) {
+                    let view = NumericProgressTaskView(
+                        task: waterTask,
+                        eventQuery: OCKEventQuery(for: date),
+                        storeManager: self.storeManager)
+                        .padding([.vertical], 10)
+                    listViewController.appendViewController(view.formattedHostingController(), animated: false)
+                 
+                }
+                
+                if #available(iOS 14, *), let moodTask = tasks.first(where: { $0.id == "mood" }) {
+                    let view = MoodView(viewModel:MoodValue())
+                    listViewController.appendViewController(view.formattedHostingController(), animated: true)
+                }
+                    
+                // adds a task that directs the user to a link of daily nutrient recommendations
+
+                if #available(iOS 14, *) {
+                    let view = LinkView(title:Text("Daily vitamin Intake"), links:[.website("https://www.nhs.uk/live-well/eat-well/what-are-reference-intakes-on-food-labels/", title:"Daily vitamin reference" )])
+                    
                     listViewController.appendViewController(view.formattedHostingController(), animated: false)
                 }
                 
@@ -208,9 +233,12 @@ class CareViewController: OCKDailyPageViewController {
                                                                     storeManager: self.storeManager)
                     listViewController.appendViewController(nauseaCard, animated: false)
                 }
+                
+                
             }
         }
     }
+
 }
 
 private extension View {
@@ -220,3 +248,4 @@ private extension View {
         return viewController
     }
 }
+

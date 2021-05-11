@@ -44,7 +44,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var firstLogin = false
     var coreDataStore: OCKStore!
     var healthKitStore: OCKHealthKitPassthroughStore!
-    var parse: ParseRemoteSynchronizationManager!
+    var parse: ParseRemote!
+    var window: UIWindow?
     private let watch = OCKWatchConnectivityPeer()
     private var sessionDelegate:SessionDelegate!
     private(set) var synchronizedStoreManager: OCKSynchronizedStoreManager?
@@ -102,7 +103,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     print("Error in setupRemotes, uuid is nil")
                     return
                 }
-                parse = try ParseRemoteSynchronizationManager(uuid: uuid, auto: false, subscribeToServerUpdates: true)
+                parse = try ParseRemote(uuid: uuid, auto: false, subscribeToServerUpdates: true)
                 coreDataStore = OCKStore(name: "ParseStore", type: .onDisk(), remote: parse)
                 parse?.parseRemoteDelegate = self
                 sessionDelegate = CloudSyncSessionDelegate(store: coreDataStore)
@@ -124,6 +125,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("Error setting up remote: \(error.localizedDescription)")
         }
     }
+   /*  func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response:        UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+
+           // instantiate the view controller from storyboard
+           if  let notificaionVC = storyboard.instantiateViewController(withIdentifier: "CareViewController") as? CareViewController {
+
+               // set the view controller as root
+            self.window?.rootViewController = notificaionVC
+           }
+     }*/
 }
 
 extension OCKStore {
@@ -226,6 +237,13 @@ extension OCKStore {
         nausea.impactsAdherence = false
         nausea.instructions = "Tap the button below anytime you experience nausea."
         
+        let moodSchedule = OCKSchedule(composing: [
+          OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 1),
+                             text: "Anytime throughout the day", targetValues:  [], duration: .allDay)
+          ])
+        var mood = OCKTask(id: "mood", title: "Track your Mood", carePlanUUID: nil, schedule: moodSchedule)
+        mood.notes = []
+    
         let kegelElement = OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 2))
         let kegelSchedule = OCKSchedule(composing: [kegelElement])
         var kegels = OCKTask(id: "kegels", title: "Kegel Exercises", carePlanUUID: nil, schedule: kegelSchedule)
@@ -237,7 +255,7 @@ extension OCKStore {
         var stretch = OCKTask(id: "stretch", title: "Stretch", carePlanUUID: nil, schedule: stretchSchedule)
         stretch.impactsAdherence = true
 
-        addTasksIfNotPresent([nausea, doxylamine, kegels, stretch])
+        addTasksIfNotPresent([nausea, doxylamine, kegels, stretch, mood])
         
         
         var contact1 = OCKContact(id: "jane", givenName: "Jane",
@@ -278,7 +296,7 @@ extension OCKStore {
     }
 }
 
-extension OCKHealthKitPassthroughStore {
+extension OCKHealthKitPassthroughStore { //adds functionality, store saves data on the device
 
     func addTasksIfNotPresent(_ tasks: [OCKHealthKitTask]) {
         let tasksToAdd = tasks
@@ -329,12 +347,33 @@ extension OCKHealthKitPassthroughStore {
                 quantityIdentifier: .stepCount,
                 quantityType: .cumulative,
                 unit: .count()))
-
-        addTasksIfNotPresent([steps])
+          
+        
+        
+           let thisMorning = Calendar.current.startOfDay(for: Date())
+            guard let aFewDaysAgo = Calendar.current.date(byAdding: .day, value: -4, to: thisMorning),
+              let beforeBreakfast = Calendar.current.date(byAdding: .hour, value: 8, to: aFewDaysAgo) else{
+                print("can't unwrap calender dates")
+                return
+        }
+        //amount of water desired to drink in a day
+        let waterSchedule = OCKSchedule(composing: [
+            OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 1),
+                               text: "Anytime throughout the day", targetValues: [OCKOutcomeValue(16, units: "Cups")], duration: .allDay)
+            ])
+      
+       let water = OCKHealthKitTask(
+            id: "water",
+            title: "Water",
+            carePlanUUID: nil,
+            schedule: waterSchedule,
+            healthKitLinkage: .init(quantityIdentifier: .dietaryWater, quantityType: .cumulative, unit: .cupUS()))
+        
+        addTasksIfNotPresent([steps, water])
     }
 }
 
-extension AppDelegate: ParseRemoteSynchronizationDelegate {
+extension AppDelegate: ParseRemoteDelegate {
 
     func didRequestSynchronization(_ remote: OCKRemoteSynchronizable) {
         DispatchQueue.main.async {
@@ -454,3 +493,4 @@ private class LocalSyncSessionDelegate: NSObject, SessionDelegate {
         }
     }
 }
+    

@@ -2,7 +2,7 @@
 //  settingsView.swift
 //  OCKSample
 //
-//  Created by Alayna Borowick on 5/8/21.
+//  Created by Nolan Bruner on 5/8/21.
 //  Copyright © 2021 Network Reconnaissance Lab. All rights reserved.
 //
 
@@ -75,6 +75,7 @@ struct settingsView: View {
                     .padding()
                 }
                 .padding()
+                if Double(notificationInterval) != nil {
                 Button("Confirm"){
                 let content = UNMutableNotificationContent()
                 content.title = "Drink Water"
@@ -83,7 +84,7 @@ struct settingsView: View {
 
                 // Converts string entered by user into type Double
                 let notificationIntervalInSeconds = Double(notificationInterval)
-               
+                    
                     // let notificationIntervalInHours = notificationIntervalInSeconds*3600
                 
                 //set repeats to true for daily notifications
@@ -97,7 +98,8 @@ struct settingsView: View {
                 }
                 .padding()
                 .foregroundColor(.blue)
-                
+                }
+               
             }
         }
     }

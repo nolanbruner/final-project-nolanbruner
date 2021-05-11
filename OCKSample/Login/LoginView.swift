@@ -89,6 +89,9 @@ struct LoginView: View {
             }
         // Signup View
         if StateView == 1{
+            Image("gymIcon.png")
+                .resizable()
+                .frame(width: 200, height: 200, alignment: .center)
                     Picker(selection: $StateView, label: Text("Login Picker"), content:{
                         Text("Login").tag(0)
                         Text("Sign Up").tag(1)

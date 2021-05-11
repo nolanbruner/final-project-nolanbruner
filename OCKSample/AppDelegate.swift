@@ -243,37 +243,7 @@ extension OCKStore {
           ])
         var mood = OCKTask(id: "mood", title: "Track your Mood", carePlanUUID: nil, schedule: moodSchedule)
         mood.notes = []
-      /*  let dietSchedule = OCKSchedule(composing: [
-            OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 1),
-                               text: "Anytime throughout the day", targetValues: [], duration: .allDay)
-            ])
-
-        var diet = OCKTask(id: "diet", title: "Track your diet",
-                             carePlanUUID: nil, schedule: dietSchedule)
-        diet.impactsAdherence = false
-        diet.instructions = "Tap the button below anytime you experience nausea."
     
-       let waterSchedule = OCKSchedule(composing: [
-            OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 1),
-                               text: "Anytime throughout the day", targetValues: [.init(16, units: "Cups")], duration: .allDay)
-            ])
-      
-
-      var mood = Task(
-            id: "mood", title: "Track your mood",
-                             carePlanUUID: nil, schedule: waterSchedule)
-        
-     
-      let waterSchedule = OCKSchedule(composing: [
-        OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 1),
-                           text: "Anytime throughout the day", targetValues:  [.init(16, units: "Cups")], duration: .allDay)
-        ])
-
-    var water = OCKTask(id: "water", title: "Track your nausea",
-                         carePlanUUID: nil, schedule: waterSchedule)
-        water.impactsAdherence = false
-        water.instructions = "Tap the button below anytime you experience nausea."
-       */
         let kegelElement = OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 2))
         let kegelSchedule = OCKSchedule(composing: [kegelElement])
         var kegels = OCKTask(id: "kegels", title: "Kegel Exercises", carePlanUUID: nil, schedule: kegelSchedule)
@@ -392,30 +362,12 @@ extension OCKHealthKitPassthroughStore { //adds functionality, store saves data 
                                text: "Anytime throughout the day", targetValues: [OCKOutcomeValue(16, units: "Cups")], duration: .allDay)
             ])
       
-/*
-      var water = OCKTask(
-            id: "water", title: "Track your water Intake",
-                             carePlanUUID: nil, schedule: waterSchedule)
-        water.impactsAdherence = false
-        water.instructions = "Tap the button below anytime you experience nausea."
-        
-        */
-        // added water task
        let water = OCKHealthKitTask(
             id: "water",
             title: "Water",
             carePlanUUID: nil,
             schedule: waterSchedule,
             healthKitLinkage: .init(quantityIdentifier: .dietaryWater, quantityType: .cumulative, unit: .cupUS()))
-       
-       /* let calories = OCKTask(
-             id: "calories",
-             title: "Calories",
-             carePlanUUID: nil,
-             schedule: waterSchedule,
-            healthKitLinkage: .init(quantityIdentifier: .calories, quantityType: .cumulative, unit: .gram()()))
-       */
-     
         
         addTasksIfNotPresent([steps, water])
     }

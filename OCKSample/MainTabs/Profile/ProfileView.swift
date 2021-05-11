@@ -43,8 +43,7 @@ struct ProfileView: View {
         Form {
             Section(header: Text("About")){
  
-       // VStack {
-     //       VStack(alignment: .leading) {
+      //Patient Info
                 TextField("First Name", text: $firstName)
                     .padding()
                     .cornerRadius(20.0)
@@ -62,25 +61,22 @@ struct ProfileView: View {
                     .padding()
                     .cornerRadius(20.0)
                     .shadow(radius: 10.0, x: 20, y: 10)
-            
-                /*TextField("Sex", text: $sex)
-                    .padding()
-                    .cornerRadius(20.0)
-                    .shadow(radius: 10.0, x: 20, y: 10)*/
-            Picker(selection: $sex, label: Text("Sex"), content: {
-                Text(OCKBiologicalSex.female.rawValue).tag(OCKBiologicalSex.female)
-                Text(OCKBiologicalSex.male.rawValue).tag(OCKBiologicalSex.male)
-                TextField("Other", text: $sexOtherField).tag(OCKBiologicalSex.other(sexOtherField))
-                })
-                .padding()
-                .cornerRadius(20.0)
-                .shadow(radius: 10.0, x: 20, y: 10)
-            TextField("Allergies", text: $allergies)
-                .padding()
-                .cornerRadius(20.0)
-                .shadow(radius: 10.0, x: 20, y: 10)
+            //Picker for sex of the patient, can either be male, female, or other( any string entered by the user
+               
+                Picker(selection: $sex, label: Text("Sex"), content: {
+                    Text(OCKBiologicalSex.female.rawValue).tag(OCKBiologicalSex.female)
+                    Text(OCKBiologicalSex.male.rawValue).tag(OCKBiologicalSex.male)
+                    TextField("Other", text: $sexOtherField).tag(OCKBiologicalSex.other(sexOtherField))
+                    })
+                        .padding()
+                        .cornerRadius(20.0)
+                        .shadow(radius: 10.0, x: 20, y: 10)
+                    TextField("Allergies", text: $allergies)
+                        .padding()
+                        .cornerRadius(20.0)
+                        .shadow(radius: 10.0, x: 20, y: 10)
                 }
-            
+            // Contact Info
            Section(header: Text("Contact")){
             TextField("Email", text: $email)
                 .padding()
@@ -112,7 +108,7 @@ struct ProfileView: View {
                 .shadow(radius: 10.0, x: 20, y: 10)
             
         }
-            // This button calls saveProfile which contains all of the strings entered by the user.
+            // This button calls saveProfile which contains all of the information entered by the user and stores it to the database.
             Button(action: {
                 profileViewModel.saveProfile(firstName, last: lastName, birth: birthday, note: note, allergies: allergies, sex: sex, email: email, phone: phone, street: street, city: city, state: state, zipcode: zipcode, country: country)
                 
@@ -125,7 +121,7 @@ struct ProfileView: View {
             })
             .background(Color(.green))
             .cornerRadius(15)
-            
+            // logout button
             if #available(iOS 14.0, *) {
                 Button(action: {
                     do {
@@ -197,7 +193,6 @@ struct ProfileView: View {
             
             if let currentSex = patient?.sex{
                 sex = currentSex
-                
             }
         }).onReceive(profileViewModel.$contact, perform: { contact in
             if let currentEmail = contact?.emailAddresses?.first {

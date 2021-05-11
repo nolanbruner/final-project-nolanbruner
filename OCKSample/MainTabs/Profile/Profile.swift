@@ -259,12 +259,7 @@ class Profile: ObservableObject {
             }
            
             let newContact = OCKContact(id: remoteUUID, givenName: first, familyName: last, carePlanUUID: nil)
-         //  newContact.emailAddresses = email
-            /*  newContact.address = {
-            let address = OCKPostalAddress()
-                address.street = street
-                
-            }*/
+         
             //This is new patient that has never been saved before
             appDelegate.synchronizedStoreManager?.store.addAnyContact(newContact, callbackQueue: .main) { result in
                 switch result {

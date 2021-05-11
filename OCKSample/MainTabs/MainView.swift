@@ -41,7 +41,8 @@ struct MainView: View {
     
     @Environment(\.storeManager) private var storeManager
     @State private var selectedTab = 0
-    @State private var tintColor = UIColor { $0.userInterfaceStyle == .light ?  #colorLiteral(red: 0, green: 0.2858072221, blue: 0.6897063851, alpha: 1) : #colorLiteral(red: 0.06253327429, green: 0.6597633362, blue: 0.8644603491, alpha: 1) }
+    @State private var tintColor = UIColor { $0.userInterfaceStyle == .light ?  #colorLiteral(red: 0.9175587296, green: 0.06729408354, blue: 0.04723475128, alpha: 1) : #colorLiteral(red: 0.98829633, green: 0.01942115463, blue: 0.05589049309, alpha: 1) }
+      //  #colorLiteral(red: 0, green: 0.2858072221, blue: 0.6897063851, alpha: 1) : #colorLiteral(red: 0.06253327429, green: 0.6597633362, blue: 0.8644603491, alpha: 1) }
     
     var body: some View {
         
@@ -71,13 +72,14 @@ struct MainView: View {
                     }
                 }
                 .tag(1)
-            MoodView()
+           MoodView(viewModel: MoodValue())
+            // LogValueView(viewModel: LogValue())
                 .tabItem {
                     if selectedTab == 2{
-                        Image("settings-filled")
+                        Image("smile")
                             .renderingMode(.template)
                     } else {
-                        Image("settings")
+                        Image("smile")
                             .renderingMode(.template)
                     }
                 }
@@ -109,6 +111,7 @@ struct MainView: View {
         }
         .accentColor(Color(tintColor))
     }
+    
 }
 
 struct MainView_Previews: PreviewProvider {

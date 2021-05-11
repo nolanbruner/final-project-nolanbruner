@@ -122,6 +122,7 @@ class CareViewController: OCKDailyPageViewController {
                     tipView.headerView.titleLabel.text = tipTitle
                     tipView.headerView.detailLabel.text = tipText
                     tipView.imageView.image = UIImage(named: "exercise.jpg")
+                    
                     listViewController.appendView(tipView, animated: false)
                 }
 
@@ -155,6 +156,7 @@ class CareViewController: OCKDailyPageViewController {
 
                 if #available(iOS 14, *) {
                     let view = LinkView(title:Text("Daily vitamin Intake"), links:[.website("https://www.nhs.uk/live-well/eat-well/what-are-reference-intakes-on-food-labels/", title:"Daily vitamin reference" )])
+                    
                     listViewController.appendViewController(view.formattedHostingController(), animated: false)
                 }
                 
@@ -229,8 +231,6 @@ class CareViewController: OCKDailyPageViewController {
                     // today's log entries should be displayed by this log task view controller.
                     let nauseaCard = OCKButtonLogTaskViewController(task: nauseaTask, eventQuery: .init(for: date),
                                                                     storeManager: self.storeManager)
-                    //let nauseaCard = OCKGridTaskViewController(task: nauseaTask, eventQuery: .init(for: date),
-                                                                //    storeManager: self.storeManager)
                     listViewController.appendViewController(nauseaCard, animated: false)
                 }
                 

@@ -38,7 +38,7 @@ struct settingsView: View {
             }
             
             if notificationPermission == 1{
-                Button("Confirm"){
+             /*  Button("Confirm"){
                 UNUserNotificationCenter.current().requestAuthorization(options: [.alert,.badge,.sound]){success, error in
                     if success{
                         print("All set!")
@@ -48,10 +48,10 @@ struct settingsView: View {
                         print(error.localizedDescription)
                         }
                     }
-                }
-                .padding()
-                .foregroundColor(.blue)
-            }
+                }*/
+             //   .padding()
+            //    .foregroundColor(.blue)
+            
            
             
             HStack{
@@ -77,6 +77,15 @@ struct settingsView: View {
                 .padding()
                 if Double(notificationInterval) != nil {
                 Button("Confirm"){
+                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert,.badge,.sound]){success, error in
+                        if success{
+                            print("All set!")
+                        }
+
+                        else if let error = error {
+                            print(error.localizedDescription)
+                            }
+                        }
                 let content = UNMutableNotificationContent()
                 content.title = "Drink Water"
                // content.subtitle = "It is important"
@@ -97,9 +106,9 @@ struct settingsView: View {
                 UNUserNotificationCenter.current().add(request)
                 }
                 .padding()
-                .foregroundColor(.blue)
+                .foregroundColor(.red)
                 }
-               
+            }
             }
         }
     }

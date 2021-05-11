@@ -41,7 +41,7 @@ struct ProfileView: View {
                 }
             
         Form {
-            Section(header: Text("About")){
+            Section(header: Text("Patient")){
  
       //Patient Info
                 TextField("First Name", text: $firstName)

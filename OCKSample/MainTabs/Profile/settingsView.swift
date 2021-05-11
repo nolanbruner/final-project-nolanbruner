@@ -12,7 +12,7 @@ import UserNotifications
 struct settingsView: View {
     @State var notificationPermission = 0
     @State var waterNotification = 0
-    @State var notificationInterval = "5"
+    @State var notificationInterval = ""
     var body: some View {
         
         VStack{
@@ -46,11 +46,13 @@ struct settingsView: View {
 
                     else if let error = error {
                         print(error.localizedDescription)
+                        }
                     }
                 }
+                .padding()
+                .foregroundColor(.blue)
             }
-            .padding()
-            .foregroundColor(.blue)
+           
             
             HStack{
             
@@ -68,11 +70,10 @@ struct settingsView: View {
             if waterNotification == 1{
                 HStack{
                 Text("How often would you like to recieve notifications?")
-                TextField("Hours", text: $notificationInterval)
-                    .keyboardType(.numberPad)
+                TextField("Seconds", text: $notificationInterval)
+                    //.keyboardType(.numberPad)
                     .padding()
                 }
-                
                 .padding()
                 Button("Confirm"){
                 let content = UNMutableNotificationContent()
@@ -87,7 +88,7 @@ struct settingsView: View {
                 
                 //set repeats to true for daily notifications
                     let trigger = UNTimeIntervalNotificationTrigger(timeInterval: notificationIntervalInSeconds!, repeats: false)
-
+                    
                 // choose a random identifier
                 let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
 
@@ -96,7 +97,7 @@ struct settingsView: View {
                 }
                 .padding()
                 .foregroundColor(.blue)
-                }
+                
             }
         }
     }

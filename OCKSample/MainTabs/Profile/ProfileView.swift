@@ -20,7 +20,8 @@ struct ProfileView: View {
     @State var lastName = ""
     @State var note = ""
     @State var allergies = ""
-    @State var sex = ""
+    @State var sex = OCKBiologicalSex.female
+    @State private var sexOtherField = ""
     
     @State var email = ""
     @State var phone = ""
@@ -30,10 +31,17 @@ struct ProfileView: View {
     @State var zipcode = ""
     @State var country = ""
     @State var birthday = Calendar.current.date(byAdding: .year, value: -20, to: Date())!
+    @State private var action: Int? = 0
     
     var body: some View {
+        NavigationView {
+            VStack {
+                NavigationLink(destination: ProfileView(), tag: 1, selection: $action) {
+                    EmptyView()
+                }
+            
         Form {
-        Section(header: Text("About")){
+            Section(header: Text("About")){
  
        // VStack {
      //       VStack(alignment: .leading) {
@@ -54,15 +62,25 @@ struct ProfileView: View {
                     .padding()
                     .cornerRadius(20.0)
                     .shadow(radius: 10.0, x: 20, y: 10)
-                TextField("Sex", text: $sex)
+            
+                /*TextField("Sex", text: $sex)
                     .padding()
                     .cornerRadius(20.0)
-                    .shadow(radius: 10.0, x: 20, y: 10)
-                TextField("Allergies", text: $allergies)
-                    .padding()
-                    .cornerRadius(20.0)
-                    .shadow(radius: 10.0, x: 20, y: 10)
+                    .shadow(radius: 10.0, x: 20, y: 10)*/
+            Picker(selection: $sex, label: Text("Sex"), content: {
+                Text(OCKBiologicalSex.female.rawValue).tag(OCKBiologicalSex.female)
+                Text(OCKBiologicalSex.male.rawValue).tag(OCKBiologicalSex.male)
+                TextField("Other", text: $sexOtherField).tag(OCKBiologicalSex.other(sexOtherField))
+                })
+                .padding()
+                .cornerRadius(20.0)
+                .shadow(radius: 10.0, x: 20, y: 10)
+            TextField("Allergies", text: $allergies)
+                .padding()
+                .cornerRadius(20.0)
+                .shadow(radius: 10.0, x: 20, y: 10)
                 }
+            
            Section(header: Text("Contact")){
             TextField("Email", text: $email)
                 .padding()
@@ -178,14 +196,8 @@ struct ProfileView: View {
             }
             
             if let currentSex = patient?.sex{
-                switch currentSex{
-                case .male:
-                    sex = "Male"
-                case .female:
-                    sex = "Female"
-                default:
-                    sex = "other"
-                }
+                sex = currentSex
+                
             }
         }).onReceive(profileViewModel.$contact, perform: { contact in
             if let currentEmail = contact?.emailAddresses?.first {
@@ -212,6 +224,10 @@ struct ProfileView: View {
             }
         })
     }
+}
+
+    }
+    
 }
 
 struct ProfileView_Previews: PreviewProvider {

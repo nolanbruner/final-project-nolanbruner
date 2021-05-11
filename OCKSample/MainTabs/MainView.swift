@@ -71,21 +71,9 @@ struct MainView: View {
                     }
                 }
                 .tag(1)
-            
-            ProfileView()
+            MoodView()
                 .tabItem {
-                    if selectedTab == 2 {
-                        Image("connect-filled")
-                            .renderingMode(.template)
-                    } else {
-                        Image("connect")
-                            .renderingMode(.template)
-                    }
-                }
-                .tag(2)
-            settingsView()
-                .tabItem {
-                    if selectedTab == 3 {
+                    if selectedTab == 2{
                         Image("settings-filled")
                             .renderingMode(.template)
                     } else {
@@ -93,7 +81,30 @@ struct MainView: View {
                             .renderingMode(.template)
                     }
                 }
+                .tag(2)
+            ProfileView()
+                .tabItem {
+                    if selectedTab == 3 {
+                        Image("connect-filled")
+                            .renderingMode(.template)
+                    } else {
+                        Image("connect")
+                            .renderingMode(.template)
+                    }
+                }
                 .tag(3)
+            settingsView()
+                .tabItem {
+                    if selectedTab == 4 {
+                        Image("settings-filled")
+                            .renderingMode(.template)
+                    } else {
+                        Image("settings")
+                            .renderingMode(.template)
+                    }
+                }
+                .tag(4)
+          
             
         }
         .accentColor(Color(tintColor))

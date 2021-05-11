@@ -113,7 +113,7 @@ class Profile: ObservableObject {
         - country: String entered in the TextField in the profile view
      
      */
-    func saveProfile(_ first: String, last: String, birth: Date, note:String, allergies: String, sex:String, email:String, phone:String, street:String, city:String, state:String, zipcode:String, country:String) {
+    func saveProfile(_ first: String, last: String, birth: Date, note:String, allergies: String, sex:OCKBiologicalSex, email:String, phone:String, street:String, city:String, state:String, zipcode:String, country:String) {
         
         if var patientToUpdate = patient {
             //If there is a currentPatient that was fetched, check to see if any of the fields changed
@@ -142,10 +142,10 @@ class Profile: ObservableObject {
                 patientToUpdate.notes = notes
             }
             // patient.sex is of type OCKBiologicalSex, so an instance of OCKBiologicalSex(rawValue:String) is needed
-           let patientSex = OCKBiologicalSex(rawValue: sex)
-            if patient?.sex != patientSex {
+            //let patientSex = OCKBiologicalSex(rawValue: sex)
+            if patient?.sex != sex {
                 patientHasBeenUpdated = true
-                patientToUpdate.sex = patientSex
+                patientToUpdate.sex = sex
             }
             //  patient.allergies is type array so it must be equal to an array of allergies.
             // If the user inters a new string for allergies, the previous string stays in the array.
@@ -258,7 +258,7 @@ class Profile: ObservableObject {
                 return
             }
            
-            var newContact = OCKContact(id: remoteUUID, givenName: first, familyName: last, carePlanUUID: nil)
+            let newContact = OCKContact(id: remoteUUID, givenName: first, familyName: last, carePlanUUID: nil)
          //  newContact.emailAddresses = email
             /*  newContact.address = {
             let address = OCKPostalAddress()
@@ -407,3 +407,4 @@ class Profile: ObservableObject {
         try appDelegate.coreDataStore.delete() //Delete data in local OCKStore database
     }
 }
+extension OCKBiologicalSex: Hashable { }

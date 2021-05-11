@@ -36,10 +36,11 @@ import SwiftUI
 import CareKitUI
 
 class CareViewController: OCKDailyPageViewController {
-
+   // @State var mood = "neutral"
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     var alreadySyncing = false
     @State var calories = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(synchronizeWithRemote))
@@ -100,7 +101,7 @@ class CareViewController: OCKDailyPageViewController {
     override func dailyPageViewController(_ dailyPageViewController: OCKDailyPageViewController,
                                           prepare listViewController: OCKListViewController, for date: Date) {
 
-        let identifiers = ["doxylamine","calories","nausea","water", "stretch", "kegels", "steps", "heartRate"]
+        let identifiers = ["doxylamine","nausea","water", "stretch", "kegels", "steps", "heartRate", "mood"]
         var query = OCKTaskQuery(for: date)
         query.ids = identifiers
         query.excludesTasksWithNoEvents = true
@@ -136,21 +137,76 @@ class CareViewController: OCKDailyPageViewController {
                 }
                 //creates a new task in the main view
                 if #available(iOS 14, *), let waterTask = tasks.first(where: { $0.id == "water" }) {
-                    /*
+                    let view = NumericProgressTaskView(
+                        task: waterTask,
+                        eventQuery: OCKEventQuery(for: date),
+                        storeManager: self.storeManager)
+                        .padding([.vertical], 10)
+                    listViewController.appendViewController(view.formattedHostingController(), animated: false)
                  
+                }
+                
+                if #available(iOS 14, *), let moodTask = tasks.first(where: { $0.id == "mood" }) {
+                    let view = MoodView()
+                    listViewController.appendViewController(view.formattedHostingController(), animated: true)
+                }
+                    // dynamic gradient colors
+                   /* let dietGradientStart = UIColor { traitCollection -> UIColor in
+                        return traitCollection.userInterfaceStyle == .light ? #colorLiteral(red: 0.9686274529, green: 0.78039217, blue: 0.3450980484, alpha: 1) : #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
+                    }
+                    let dietGradientEnd = UIColor { traitCollection -> UIColor in
+                        return traitCollection.userInterfaceStyle == .light ? #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1) : #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
+                    }
+               
                     // Create a plot comparing nausea to medication adherence.
-                    let waterDataSeries = OCKDataSeriesConfiguration(
-                        taskID: "water",
-                        legendTitle: "Water",
-                        gradientStartColor: .blue,
-                        gradientEndColor: .systemBlue,
+                    let totalFatDataSeries = OCKDataSeriesConfiguration(
+                        taskID: "dietTask",
+                        legendTitle: "Total Fat",
+                        gradientStartColor: dietGradientStart,
+                        gradientEndColor: dietGradientEnd,
                         markerSize: 10,
                         eventAggregator: OCKEventAggregator.countOutcomeValues)
 
+                 let saturatedFatDataSeries = OCKDataSeriesConfiguration(
+                        taskID: "saturatedFat",
+                        legendTitle: "Saturated Fat",
+                        gradientStartColor: .systemGray2,
+                        gradientEndColor: .systemGray,
+                        markerSize: 10,
+                        eventAggregator: OCKEventAggregator.countOutcomeValues)
+                    let carbohydratesDataSeries = OCKDataSeriesConfiguration(
+                        taskID: "carbs",
+                        legendTitle: "Carbohydrates",
+                        gradientStartColor: .systemGray2,
+                        gradientEndColor: .systemGray,
+                        markerSize: 10,
+                        eventAggregator: OCKEventAggregator.countOutcomeValues)
+                    
+                    let totalSugarsDataSeries = OCKDataSeriesConfiguration(
+                        taskID: "sugars",
+                        legendTitle: "Total Sugars",
+                        gradientStartColor: .systemGray2,
+                        gradientEndColor: .systemGray,
+                        markerSize: 10,
+                        eventAggregator: OCKEventAggregator.countOutcomeValues)
+                    let proteinDataSeries = OCKDataSeriesConfiguration(
+                        taskID: "protein",
+                        legendTitle: "Protein",
+                        gradientStartColor: .systemGray2,
+                        gradientEndColor: .systemGray,
+                        markerSize: 10,
+                        eventAggregator: OCKEventAggregator.countOutcomeValues)
+                    let saltDataSeries = OCKDataSeriesConfiguration(
+                        taskID: "protein",
+                        legendTitle: "Protein",
+                        gradientStartColor: .systemGray2,
+                        gradientEndColor: .systemGray,
+                        markerSize: 10,
+                        eventAggregator: OCKEventAggregator.countOutcomeValues)
                     let insightsCard = OCKCartesianChartViewController(
                         plotType: .bar,
                         selectedDate: date,
-                        configurations: [waterDataSeries],
+                        configurations: [totalFatDataSeries],//, saturatedFatDataSeries, carbohydratesDataSeries,totalSugarsDataSeries, proteinDataSeries, saltDataSeries],
                         storeManager: self.storeManager)
 
                     insightsCard.chartView.headerView.titleLabel.text = "Nausea & Doxylamine Intake"
@@ -161,31 +217,49 @@ class CareViewController: OCKDailyPageViewController {
                     // Also create a card that displays a single event.
                     // The event query passed into the initializer specifies that only
                     // today's log entries should be displayed by this log task view controller.
-                    let waterCard = OCKButtonLogTaskViewController(task: waterTask, eventQuery: .init(for: date),
+                    let TotalFatCard = OCKButtonLogTaskViewController(task: dietTask, eventQuery: .init(for: date),
                                                                     storeManager: self.storeManager)
-                    listViewController.appendViewController(waterCard, animated: false)
-                   */
-                    //  OCKNumericProgressTaskController
-                    let view = NumericProgressTaskView(
-                        task: waterTask,
-                        eventQuery: OCKEventQuery(for: date),
-                        storeManager: self.storeManager)
-                        .padding([.vertical], 10)
-                    listViewController.appendViewController(view.formattedHostingController(), animated: false)
-                    
+                    listViewController.appendViewController(TotalFatCard, animated: false)
                    
-                }
-                if #available(iOS 14, *), let calorieTask = tasks.first(where: { $0.id == "calories" }) {
-                        let view = NumericProgressTaskView(
-                            task: calorieTask,
-                            eventQuery: OCKEventQuery(for: date),
-                            storeManager: self.storeManager)
-                            .padding([.vertical], 10)
+                    let saturatedFatCard = OCKGridTaskViewController(task: dietTask, eventQuery: .init(for: date),
+                                                             storeManager: self.storeManager)
+                    listViewController.appendViewController(saturatedFatCard, animated: false)
+                    
+                    let carbohydratesCard = OCKGridTaskViewController(task: dietTask, eventQuery: .init(for: date),
+                                                             storeManager: self.storeManager)
+                    listViewController.appendViewController(carbohydratesCard, animated: false)
+                   
+                    let totalSugarsCard = OCKGridTaskViewController(task: dietTask, eventQuery: .init(for: date),
+                                                             storeManager: self.storeManager)
+                    listViewController.appendViewController(totalSugarsCard, animated: false)
+                    
+                    let proteinCard = OCKGridTaskViewController(task: dietTask, eventQuery: .init(for: date),
+                                                             storeManager: self.storeManager)
+                    listViewController.appendViewController(proteinCard, animated: false)
+                    
+                    let saltCard = OCKGridTaskViewController(task: dietTask, eventQuery: .init(for: date),
+                                                             storeManager: self.storeManager)
+                    listViewController.appendViewController(saltCard, animated: false)
+                    
+                    */
+                
+              //  if #available(iOS 14, *), let moodTask = tasks.first(where: { $0.id == "mood" }) {
+                  //  let progress = 0
+                    //CareKitUI.NumericProgressTaskView(title:Text("WaterTask"),progress:Text(progress), goal: Text("16"), instructions: Text("pressButton"), isComplete: false)
+                /*    Picker(selection: self.$mood, label: Text("Mood"), content: {
+                        Text("Happy").tag(1)
+                        Text("sad").tag(0)
+                      //  TextField("Other", text: $sexOtherField).tag(OCKBiologicalSex.other(sexOtherField))
+                        })
+                        .padding()
+                        .cornerRadius(20.0)
+                      //  .shadow(radius: 10.0, x: 20, y: 10)
                            // NumericProgressTaskViewController(task: calorieTask, eventQuery: .init(for: date), storeManager: self.storeManager)
-                            listViewController.appendViewController(view.formattedHostingController(), animated: false)
-                }
-                // adds a task that directs the user to a link of daily vitamin recommendations
-     
+                     //       listViewController.appendViewController(view.formattedHostingController(), animated: false)
+*/
+            //    }
+                // adds a task that directs the user to a link of daily nutrient recommendations
+
                 if #available(iOS 14, *) {
                     let view = LinkView(title:Text("Daily vitamin Intake"), links:[.website("https://www.nhs.uk/live-well/eat-well/what-are-reference-intakes-on-food-labels/", title:"Daily vitamin reference" )])
                     listViewController.appendViewController(view.formattedHostingController(), animated: false)
@@ -262,11 +336,16 @@ class CareViewController: OCKDailyPageViewController {
                     // today's log entries should be displayed by this log task view controller.
                     let nauseaCard = OCKButtonLogTaskViewController(task: nauseaTask, eventQuery: .init(for: date),
                                                                     storeManager: self.storeManager)
+                    //let nauseaCard = OCKGridTaskViewController(task: nauseaTask, eventQuery: .init(for: date),
+                                                                //    storeManager: self.storeManager)
                     listViewController.appendViewController(nauseaCard, animated: false)
                 }
+                
+                
             }
         }
     }
+
 }
 
 private extension View {
@@ -276,3 +355,4 @@ private extension View {
         return viewController
     }
 }
+

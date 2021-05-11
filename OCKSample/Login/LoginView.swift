@@ -10,7 +10,7 @@
 
 import SwiftUI
 import ParseSwift
-//import UIKit
+import UIKit
 
 struct LoginView: View {
     
@@ -77,7 +77,7 @@ struct LoginView: View {
                    login.loginAnonymously()
                  //   StateView = 1
                 }, label: {
-                    Text("Sign Up")
+                    Text("Login Anonymously")
                 })
           
                 
@@ -120,10 +120,12 @@ struct LoginView: View {
                     .background(Color(.red))
                     .cornerRadius(15)
                     //Spacer()
-                    
+            if let error = login.loginError {
+                Text("Error: \(error.message)")
+                    .foregroundColor(.red)
+                    }
                 }
             }
-        
         }
     }
 }
@@ -133,6 +135,7 @@ struct LoginView_Previews: PreviewProvider {
         LoginView()
     }
 }
+
 /*
 struct signupView:View{
    // @ObservedObject private var signup = signup()
